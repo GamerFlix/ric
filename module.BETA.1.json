@@ -1,0 +1,20 @@
+{
+    "name": "fvtt-dual-track-module",
+    "title": "FVTT Dual-Track Module Template",
+    "description": "A template repository.",
+    "system": [],
+    "version": "1.0.1+BETA.1",
+    "author": "",
+    "authors": [],
+    "esmodules": [
+        "scripts/module.mjs"
+    ],
+    "languages": [],
+    "styles": [],
+    "socket": false,
+    "url": "https://github.com/trioderegion/fvtt-dual-track-module",
+    "manifest": "https://raw.githubusercontent.com/trioderegion/fvtt-dual-track-module/next/module.BETA.1.json",
+    "download": "https://github.com/trioderegion/fvtt-dual-track-module/releases/download/1.0.1+BETA.1/module.zip",
+    "minimumCoreVersion": "9",
+    "compatibleCoreVersion": "9"
+}
