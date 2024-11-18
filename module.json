@@ -1,23 +1,23 @@
 {
-    "name": "fvtt-dual-track-module",
-    "title": "FVTT Dual-Track Module Template",
+    "id": "ric",
+    "title": "Reflect, Inspect, Correct",
     "description": "A template repository.",
-    "system": [],
     "version": "1.0.0",
-    "author": "",
-    "authors": [
+    "authors": [{
+		"name":"Flix"
+	}
     ],
     "esmodules": [
         "scripts/module.mjs"
     ],
     "languages": [
     ],
-    "styles": [
-    ],
     "socket": false,
     "url": "",
     "manifest": "",
     "download": "",
-    "minimumCoreVersion": "9",
-    "compatibleCoreVersion": "9"
+	"compatibility":{
+		"minimum": "12.331",
+        "verified": "12"
+	}
 }

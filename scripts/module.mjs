@@ -7,20 +7,21 @@
 /**
  * Sub Modules
  */
-//import { MyClass } from './modules/my-class.js'
+import {Wrapper} from "./modules/wrapper.mjs"
 
 /**
  * Sub Apps
  */
 //import { MyDialog } from './apps/my-dialog.js';
 export class MODULE {
-  static SUB_MODULES = {
-    //MyLogger,
+  static id="ric"
+  static SUB_MODULES = [
+    Wrapper,
     //MyClass
-  };
+  ];
 
   static SUB_APPS = {
-    //MyDialog  
+     
   }
   
   static build() {
@@ -38,9 +39,8 @@ MODULE.build();
 /*
   Initialize all Sub Modules
 */
-Hooks.on(`setup`, () => {
-
-  Object.values(MODULE.SUB_MODULES).forEach(cl => cl.register());
+Hooks.on(`init`, () => {
+  for (const SUB_MODULE of MODULE.SUB_MODULES) SUB_MODULE.register()
 
   //GlobalTesting (adds all imports to global scope)
   //Object.entries(MODULE.SUB_MODULES).forEach(([key, cl])=> window[key] = cl);
