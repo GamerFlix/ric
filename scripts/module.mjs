@@ -7,6 +7,7 @@
 /**
  * Sub Modules
  */
+import { RicApp } from "./modules/app.mjs";
 import {Wrapper} from "./modules/wrapper.mjs"
 
 /**
@@ -17,6 +18,7 @@ export class MODULE {
   static id="ric"
   static SUB_MODULES = [
     Wrapper,
+    RicApp
     //MyClass
   ];
 
