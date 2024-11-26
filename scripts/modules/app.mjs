@@ -105,9 +105,16 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
   static async #autoFix(event, target) {
     const {collectionName, id} = target.closest(".error").dataset;
     const errorData = this.retrieveError(collectionName, id);
+    const paths=RicApp._retrieveInvalidValues(errorData.error.getFailure())
+    if (Object.keys(paths).includes("type")){
+      ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
+      return
+    }
+
     const confirm= await foundry.applications.api.DialogV2.confirm({
-      title: game.i18n.localize("RIC.APP.CONFIRM.AUTOFIX.TITLE"),
-      content: game.i18n.localize("RIC.APP.CONFIRM.AUTOFIX.CONTENT")
+      window:{title: "RIC.APP.CONFIRM.AUTOFIX.TITLE",icon:"a-solid fa-screwdriver-wrench"},
+      content: game.i18n.localize("RIC.APP.CONFIRM.AUTOFIX.CONTENT"),
+      modal:true
     });
     if (confirm){
       const doc=errorData.collection.getInvalid(errorData.source._id)
@@ -115,7 +122,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
       ui.notifications.info(game.i18n.localize("RIC.NOTIF.AUTOFIX"))
     }
 
-    // TODO.
+    
   }
 
     /**
@@ -124,29 +131,85 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * @param {PointerEvent} event      The triggering click event.
    * @param {HTMLElement} target      The element that defined the data-action.
    */
-    static #manualFix(event, target) {
+    static async #manualFix(event, target) {
       const {collectionName, id} = target.closest(".error").dataset;
       const errorData = this.retrieveError(collectionName, id);
-      const failure=errorData.error.getFailure()
-      let stuff=RicApp._traverseFailure(failure,{},0)
-      
-      console.log(stuff)
-
-      // TODO.
-    }
-    static _traverseFailure(currentLevel,paths,depth){
-      let maxDepth=10//arbitrary
-      const currentValue=currentLevel.invalidValue
-      if (currentValue===undefined){//not the actually invalid value
-        for (const [key,value] of Object.entries(currentLevel.fields)){
-          let newObj={}
-          paths[key]=newObj
-          console.log(paths)
-          return RicApp._traverseFailure(value,newObj,depth+1)
+      const paths=RicApp._retrieveInvalidValues(errorData.error.getFailure())
+      console.log(paths)
+      if (Object.keys(paths).includes("type")){
+        ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
+        return
+      }
+      const doc=errorData.collection.getInvalid(errorData.source._id)
+      //TODO: Localize this
+      let content=`<p>${game.i18n.format("RIC.APP.CONFIRM.MANUALFIX.CONTENT")}</p>`
+      for (const [path,value] of Object.entries(paths)){
+        const field=path.startsWith("system.") ? doc.system.schema.getField(path.slice(7)) : doc.schema.getField(path);
+        content+=field.toFormGroup({label: game.i18n.format(field.label) || "Invalid Value",hint:game.i18n.format(field.hint) || ""}, {name:path}).outerHTML+`<p class="hint">The current value is ${value}.</p>`
+      }
+      const data = await foundry.applications.api.DialogV2.prompt({
+        window: {title: "RIC.APP.CONFIRM.MANUALFIX.TITLE",icon:"fa-solid fa-pen-to-square"},
+        content: content,
+        ok: {
+          callback: (event, button) => new FormDataExtended(button.form).object
         }
-      }else{//Reached the invalid value
-        console.log(paths)
-        return paths, currentValue, depth
+      });
+      console.log(data)
+      await doc.update(data)
+      ui.notifications.info(game.i18n.format("RIC.NOTIF.MANUALFIX"))
+    }
+
+    /**
+   * Retrieve the invalid values and path to them
+   * @this {RicApp}
+   * @param {Failure} failure      ValidationFailure provided by Foundry
+   */
+    static _retrieveInvalidValues(failure) {
+      if (foundry.utils.isEmpty(failure.fields)&&foundry.utils.isEmpty(failure.elements)&&!failure.invalidValue){
+        ui.notifications.error(game.i18n.format("RIC.NOTIF.UNSALVAGEABLE"))
+        return
+      }
+      //This entire section is a mess and a hack but it works
+      let paths={}
+      const [level,obj,key,containsArray]=RicApp._traverseFailure(failure,paths)
+      
+      if (containsArray){
+        ui.notifications.warn(game.i18n.format("RIC.NOTIF.ARRAY"))
+        return
+      }
+      paths=paths[""]//Did I mention this was a mess yet?
+      paths=foundry.utils.flattenObject(paths)
+      return paths
+    }
+
+
+
+  /**
+   * Traverse the failure to retrieve the invalid value and path to the value.
+   * @this {RicApp}
+   * @param {Object} currentLevel
+   * @param {Object} paths
+   * @param {String} currentKey
+   * @param {boolean} containsArray Whether the invalid path contains an array 
+   */
+    static _traverseFailure(currentLevel,paths,currentKey="",containsArray=false){
+      let maxDepth=10//arbitrary
+      console.log("uncorrected level",currentLevel)
+      if (!currentLevel.fields){//If field doesn't exist we have the weird structure you get from an array na dhave to go deeper
+         currentLevel=currentLevel.failure
+         containsArray=true
+      }
+      const currentValue=currentLevel.invalidValue
+      if (currentValue===undefined){
+        let fields=Object.entries(currentLevel.fields)
+        fields=fields.concat(Object.entries(currentLevel.elements))
+        for (const [key,value] of fields){
+          paths[currentKey]={}
+          return RicApp._traverseFailure(value,paths[currentKey],key,containsArray)
+        }
+      }else{
+        paths[currentKey]=currentValue
+        return [currentLevel,paths,currentKey,containsArray]
       }
     }
   /* -------------------------------------------------- */
@@ -175,8 +238,9 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
     const {collectionName, id} = target.closest(".error").dataset;
     const errorData = this.retrieveError(collectionName, id);
     const confirm= await foundry.applications.api.DialogV2.confirm({
-      title: game.i18n.localize("RIC.APP.CONFIRM.DELETION.TITLE"),
-      content: game.i18n.localize("RIC.APP.CONFIRM.DELETION.CONTENT")
+      window:{title: "RIC.APP.CONFIRM.DELETION.TITLE",icon:"fa-solid fa-trash"},
+      content: game.i18n.localize("RIC.APP.CONFIRM.DELETION.CONTENT"),
+      modal:true
     });
     if (confirm){
       await errorData.collection.getInvalid(errorData.source._id).delete()
