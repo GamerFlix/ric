@@ -1,20 +1,32 @@
 {
-    "name": "fvtt-dual-track-module",
-    "title": "FVTT Dual-Track Module Template",
+    "id": "ric",
+    "title": "Reflect, Inspect, Correct",
     "description": "A template repository.",
-    "system": [],
-    "version": "1.0.0+MULTI.5",
-    "author": "",
-    "authors": [],
+    "version": "0.1",
+    "authors": [
+        {
+            "name": "Flix"
+        }
+    ],
     "esmodules": [
         "scripts/module.mjs"
     ],
-    "languages": [],
-    "styles": [],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "languages/en.json"
+        }
+    ],
     "socket": false,
-    "url": "https://github.com/trioderegion/fvtt-dual-track-module",
-    "manifest": "https://raw.githubusercontent.com/trioderegion/fvtt-dual-track-module/next/module.json",
-    "download": "https://github.com/trioderegion/fvtt-dual-track-module/releases/download/1.0.0+MULTI.5/module.zip",
-    "minimumCoreVersion": "9",
-    "compatibleCoreVersion": "9"
+    "url": "https://github.com/GamerFlix/ric",
+    "manifest": "https://raw.githubusercontent.com/GamerFlix/ric/next/module.json",
+    "download": "https://github.com/GamerFlix/ric/releases/download/0.1/module.zip",
+    "compatibility": {
+        "minimum": "12.331",
+        "verified": "12"
+    },
+    "styles": [
+        "styles/styles.css"
+    ]
 }
