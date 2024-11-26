@@ -1,0 +1,11 @@
+{
+  "RIC": {
+    "APP": {
+      "AUTOFIX": "Auto Fix",
+      "COPY": "Copy",
+      "COPIED_ERROR": "The error message has been copied to the clipboard.",
+      "DELETE": "Delete",
+      "TITLE": "Pickle Ric"
+    }
+  }
+}

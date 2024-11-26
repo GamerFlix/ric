@@ -7,7 +7,7 @@
 /**
  * Sub Modules
  */
-import { RicApp } from "./modules/app.mjs";
+import RicApp from "./modules/app.mjs";
 import {Wrapper} from "./modules/wrapper.mjs"
 
 /**
@@ -17,15 +17,14 @@ import {Wrapper} from "./modules/wrapper.mjs"
 export class MODULE {
   static id="ric"
   static SUB_MODULES = [
+    RicApp,
     Wrapper,
-    RicApp
-    //MyClass
   ];
 
   static SUB_APPS = {
-     
+
   }
-  
+
   static build() {
     //all startup tasks needed before sub module initialization
   }
@@ -41,8 +40,9 @@ MODULE.build();
 /*
   Initialize all Sub Modules
 */
-Hooks.on(`init`, () => {
-  for (const SUB_MODULE of MODULE.SUB_MODULES) SUB_MODULE.register()
+Hooks.once("init", () => {
+  game.modules.get(MODULE.id).api = {};
+  for (const SUB_MODULE of MODULE.SUB_MODULES) SUB_MODULE.register();
 
   //GlobalTesting (adds all imports to global scope)
   //Object.entries(MODULE.SUB_MODULES).forEach(([key, cl])=> window[key] = cl);

@@ -1,0 +1,23 @@
+<section class="errors scrollable">
+  {{#each errors}}
+  <div class="error" data-collection-name="{{collectionName}}" data-id="{{id}}">
+    <div class="data-row">
+      <span class="label">{{label}}</span>
+      <div class="controls">
+        <button type="button" class="control" data-tooltip="RIC.APP.DELETE" data-action="deleteError">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+        <button type="button" class="control" data-tooltip="RIC.APP.AUTOFIX" data-action="autoFix">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+        </button>
+      </div>
+    </div>
+    <div class="message">
+      <a class="copy" data-action="copyError" data-tooltip="RIC.APP.COPY">
+        <i class="fa-solid fa-copy"></i>
+      </a>
+      {{{error}}}
+    </div>
+  </div>
+  {{/each}}
+</section>
