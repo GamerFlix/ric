@@ -18,4 +18,4 @@ Aswell as manual recovery showing the current invalid values
 
 ![grafik](https://github.com/user-attachments/assets/09a6ba09-a487-46ab-9d7b-b4a8a217f3cc)
 
-Do note that manual recovery is currently unsupported for values within Arrays and Documents with a custom type offer no room for recovery, only deletion.
+Do note that manual recovery is currently not supported for values within Arrays and Documents with a custom type offer no room for recovery, only deletion.
