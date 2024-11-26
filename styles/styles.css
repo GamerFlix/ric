@@ -1,0 +1,67 @@
+.application.ric {
+  max-height: 95%;
+
+  .errors {
+    .error {
+      display: flex;
+      flex-direction: column;
+      min-height: 100px;
+      padding: 1em;
+
+      &:nth-child(even) {
+        background-color: rgba(50, 50, 50, 0.75);
+        border-radius: 5px;
+      }
+
+      .data-row {
+        display: inherit;
+        flex: 1;
+        flex-direction: row;
+
+        .label {
+          flex: 1;
+          font-size: 20px;
+          align-self: center;
+        }
+
+        .controls {
+          flex: 0 0 100px;
+          display: grid;
+          gap: 1em;
+          grid-template-columns: repeat(2, 1fr);
+
+          .control {
+            width: 100%;
+            aspect-ratio: 1;
+
+            .fa-solid {
+              margin: 0;
+              font-size: 20px;
+            }
+          }
+        }
+      }
+
+      .message {
+        border: 1px dashed gray;
+        border-radius: 0.5em;
+        padding: 1em;
+        user-select: text;
+        margin: 1em 0;
+        font-family: 'Courier New', Courier, monospace;
+        position: relative;
+
+        &:hover .copy {
+          display: block;
+        }
+
+        .copy {
+          position: absolute;
+          top: 0.5em;
+          right: 0.5em;
+          display: none;
+        }
+      }
+    }
+  }
+}

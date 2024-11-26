@@ -10,8 +10,11 @@
     "esmodules": [
         "scripts/module.mjs"
     ],
-    "languages": [
-    ],
+    "languages": [{
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }],
     "socket": false,
     "url": "",
     "manifest": "",
@@ -19,5 +22,8 @@
 	"compatibility":{
 		"minimum": "12.331",
         "verified": "12"
-	}
+	},
+  "styles": [
+    "styles/styles.css"
+  ]
 }
