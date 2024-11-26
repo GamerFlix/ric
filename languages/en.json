@@ -1,11 +1,25 @@
 {
   "RIC": {
     "APP": {
-      "AUTOFIX": "Auto Fix",
+      "AUTOFIX": "Attempt to automatically resolve the invalid property.",
       "COPY": "Copy",
       "COPIED_ERROR": "The error message has been copied to the clipboard.",
-      "DELETE": "Delete",
-      "TITLE": "Pickle Ric"
+      "DELETE": "Delete the invalid Document.",
+      "TITLE": "Inspect, Reflect, Correct",
+      "CONFIRM":{
+        "DELETION":{
+          "TITLE":"Delete invalid Document",
+          "CONTENT":"This will permanently delete the invalid Document. Are you sure you wish to do this?"
+        },
+        "AUTOFIX":{
+          "TITLE":"Remove invalid data",
+          "CONTENT":"This will attempt to autoamtically remove the data causing the validation failure of the Document. <p> This will lead to <strong> permanent loss of the current value </strong> of the problematic field and can not be reverted.</p> Do you wish to proceed regardless?"
+        }
+      }
+    },
+    "NOTIF":{
+      "DELETE":"The Document has been deleted. Do note that this will not be visible until you refresh.",
+      "AUTOFIX":"Automatic correction of the invalid Document has been attempted.To see the result you will need to refresh. Should it still be invalid after a refresh, the issue can not be automatically resolved."
     }
   }
 }

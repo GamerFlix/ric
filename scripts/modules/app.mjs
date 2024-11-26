@@ -28,6 +28,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
       autoFix: RicApp.#autoFix,
       copyError: RicApp.#copyError,
       deleteError: RicApp.#deleteError,
+      manualFix:RicApp.#manualFix
     },
   };
 
@@ -101,12 +102,53 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * @param {PointerEvent} event      The triggering click event.
    * @param {HTMLElement} target      The element that defined the data-action.
    */
-  static #autoFix(event, target) {
+  static async #autoFix(event, target) {
     const {collectionName, id} = target.closest(".error").dataset;
     const errorData = this.retrieveError(collectionName, id);
+    const confirm= await foundry.applications.api.DialogV2.confirm({
+      title: game.i18n.localize("RIC.APP.CONFIRM.AUTOFIX.TITLE"),
+      content: game.i18n.localize("RIC.APP.CONFIRM.AUTOFIX.CONTENT")
+    });
+    if (confirm){
+      const doc=errorData.collection.getInvalid(errorData.source._id)
+      doc.update(doc.toObject(),{diff:false,recursive:false})
+      ui.notifications.info(game.i18n.localize("RIC.NOTIF.AUTOFIX"))
+    }
+
     // TODO.
   }
 
+    /**
+   * Handle manually fixing an error.
+   * @this {RicApp}
+   * @param {PointerEvent} event      The triggering click event.
+   * @param {HTMLElement} target      The element that defined the data-action.
+   */
+    static #manualFix(event, target) {
+      const {collectionName, id} = target.closest(".error").dataset;
+      const errorData = this.retrieveError(collectionName, id);
+      const failure=errorData.error.getFailure()
+      let stuff=RicApp._traverseFailure(failure,{},0)
+      
+      console.log(stuff)
+
+      // TODO.
+    }
+    static _traverseFailure(currentLevel,paths,depth){
+      let maxDepth=10//arbitrary
+      const currentValue=currentLevel.invalidValue
+      if (currentValue===undefined){//not the actually invalid value
+        for (const [key,value] of Object.entries(currentLevel.fields)){
+          let newObj={}
+          paths[key]=newObj
+          console.log(paths)
+          return RicApp._traverseFailure(value,newObj,depth+1)
+        }
+      }else{//Reached the invalid value
+        console.log(paths)
+        return paths, currentValue, depth
+      }
+    }
   /* -------------------------------------------------- */
 
   /**
@@ -129,9 +171,16 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * @param {PointerEvent} event      The triggering click event.
    * @param {HTMLElement} target      The element that defined the data-action.
    */
-  static #deleteError(event, target) {
+  static async #deleteError(event, target) {
     const {collectionName, id} = target.closest(".error").dataset;
     const errorData = this.retrieveError(collectionName, id);
-    // TODO.
+    const confirm= await foundry.applications.api.DialogV2.confirm({
+      title: game.i18n.localize("RIC.APP.CONFIRM.DELETION.TITLE"),
+      content: game.i18n.localize("RIC.APP.CONFIRM.DELETION.CONTENT")
+    });
+    if (confirm){
+      await errorData.collection.getInvalid(errorData.source._id).delete()
+      ui.notifications.info(game.i18n.localize("RIC.NOTIF.DELETE"))
+    }
   }
 }
