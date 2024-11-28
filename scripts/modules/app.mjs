@@ -105,7 +105,9 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
   static async #autoFix(event, target) {
     const {collectionName, id} = target.closest(".error").dataset;
     const errorData = this.retrieveError(collectionName, id);
-    const paths=RicApp._retrieveInvalidValues(errorData.error.getFailure())
+    let paths={}
+    RicApp._traverseFailure(errorData.error.getFailure(),paths)
+    paths=foundry.utils.flattenObject(paths[""])//Can't use retrieveInvalidValues as it includes the irrelevant array check
     if (Object.keys(paths).includes("type")){
       ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
       return
@@ -163,6 +165,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * Retrieve the invalid values and path to them
    * @this {RicApp}
    * @param {Failure} failure      ValidationFailure provided by Foundry
+   * @returns {Object} paths Flattened object with the relevant paths as the key and the invalid value as the value
    */
     static _retrieveInvalidValues(failure) {
       if (foundry.utils.isEmpty(failure.fields)&&foundry.utils.isEmpty(failure.elements)&&!failure.invalidValue){
@@ -191,6 +194,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * @param {Object} paths
    * @param {String} currentKey
    * @param {boolean} containsArray Whether the invalid path contains an array 
+   * @return {Object,Object,String,Boolean}
    */
     static _traverseFailure(currentLevel,paths,currentKey="",containsArray=false){
       let maxDepth=10//arbitrary

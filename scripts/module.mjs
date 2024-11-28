@@ -8,6 +8,7 @@
  * Sub Modules
  */
 import RicApp from "./modules/app.mjs";
+import { ButtonInjector } from "./modules/button_injector.mjs";
 import {Wrapper} from "./modules/wrapper.mjs"
 
 /**
@@ -19,6 +20,7 @@ export class MODULE {
   static SUB_MODULES = [
     RicApp,
     Wrapper,
+    ButtonInjector
   ];
 
   static SUB_APPS = {

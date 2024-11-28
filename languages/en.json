@@ -29,6 +29,10 @@
       "ARRAY":"Manual adjustment of Array values is not supported at this time.",
        "CUSTOMTYPE":"Documents with an unrecognized type originally introduced by a module can not be resolved in any way, shape or form. Your only options are to delete the Document or reinstall the Module that added the custom type.",
       "UNSALVAGEABLE":"Document issue could not be identified. Deletion or recovery via custom script is recommended."
+    },
+    "LAUNCHER":{
+      "DISABLED":"No validation issues detected!",
+      "ENABLED":"Resolve Validation issues."
     }
   }
 }
