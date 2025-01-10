@@ -2,7 +2,11 @@
 
 A module for FounryVTT to provide a user interface to allow reflecting on the state of invalid Documents, inspect the issue in detail, and ultimately correct it by resolving the issue or deleting the Document.
 
-Adds a user interface to inspect invalid Documents:
+This module adds a user interface to inspect invalid Documents which you can find under the "Invalid Docuemnts" tab inside the "Support & Issues" Dialog accessible in the sidebar:
+
+![WhereToFind](https://github.com/user-attachments/assets/f25d09df-fa5b-4e90-a809-1dc7954c5536)
+
+Clicking the button indicated in the picture above will open the interface:
 
 ![grafik](https://github.com/user-attachments/assets/667ca702-3eaa-4309-b264-b58c94ed99a3)
 
