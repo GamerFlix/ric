@@ -5,7 +5,7 @@
       "COPY": "Copy",
       "COPIED_ERROR": "The error message has been copied to the clipboard.",
       "DELETE": "Delete the invalid Document.",
-      "TITLE": "Inspect, Reflect, Correct",
+      "TITLE": "Reflect, Inspect, Correct",
       "MANUALFIX":"Open dialogue to manually input replacement values.",
       "CONFIRM":{
         "DELETION":{
