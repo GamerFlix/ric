@@ -1,6 +1,6 @@
 # Reflect, Inspect, Correct
 
-A module for FounryVTT to provide a user interface to allow reflecting on the state of invalid Documents, inspect the issue in detail, and ultimately correct it by resolving the issue or deleting the Document.
+A module for FoundryVTT to provide a user interface to allow reflecting on the state of invalid Documents, inspect the issue in detail, and ultimately correct it by resolving the issue or deleting the Document.
 
 This module adds a user interface to inspect invalid Documents which you can find under the "Invalid Docuemnts" tab inside the "Support & Issues" Dialog accessible in the sidebar:
 
