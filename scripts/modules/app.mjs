@@ -136,8 +136,8 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
     static async #manualFix(event, target) {
       const {collectionName, id} = target.closest(".error").dataset;
       const errorData = this.retrieveError(collectionName, id);
+      console.log(errorData.source)
       const paths=RicApp._retrieveInvalidValues(errorData.error.getFailure())
-      console.log(paths)
       if (Object.keys(paths).includes("type")){
         ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
         return
@@ -174,8 +174,9 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
       }
       //This entire section is a mess and a hack but it works
       let paths={}
+      console.log(failure)
       const [level,obj,key,containsArray]=RicApp._traverseFailure(failure,paths)
-      
+      console.log(paths)
       if (containsArray){
         ui.notifications.warn(game.i18n.format("RIC.NOTIF.ARRAY"))
         return
@@ -197,16 +198,17 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * @return {Object,Object,String,Boolean}
    */
     static _traverseFailure(currentLevel,paths,currentKey="",containsArray=false){
+      if (!!currentLevel.failure) currentLevel=currentLevel.failure //Arrays have their stuff nested and this is the easiest fix afaik
       let maxDepth=10//arbitrary
-      console.log("uncorrected level",currentLevel)
-      if (!currentLevel.fields){//If field doesn't exist we have the weird structure you get from an array na dhave to go deeper
-         currentLevel=currentLevel.failure
-         containsArray=true
-      }
+      //console.log("uncorrected level",currentLevel)
       const currentValue=currentLevel.invalidValue
       if (currentValue===undefined){
-        let fields=Object.entries(currentLevel.fields)
-        fields=fields.concat(Object.entries(currentLevel.elements))
+        let fields=[]
+        if (!!currentLevel.fields)fields=fields.concat(Object.entries(currentLevel.fields))
+        if (!!currentLevel.elements){
+          fields=fields.concat(Object.entries(currentLevel.elements))
+          containsArray=true
+        } 
         for (const [key,value] of fields){
           paths[currentKey]={}
           return RicApp._traverseFailure(value,paths[currentKey],key,containsArray)
