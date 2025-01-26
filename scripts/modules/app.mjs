@@ -1,3 +1,5 @@
+import { MODULE } from "../module.mjs";
+
 export default class RicApp extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
@@ -5,7 +7,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
    * Register this module in the api.
    */
   static register() {
-    game.modules.get("ric").api.Application = RicApp;
+    game.modules.get(MODULE.id).api.Application = RicApp;
   }
 
   /* -------------------------------------------------- */
