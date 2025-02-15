@@ -43,7 +43,6 @@ export class ApiFunctions{
         return affectedCollections
     }
     static register(){
-        console.warn("register was called!!!")
         game.modules.get(MODULE.id).api.deepSearch=ApiFunctions.deepSearch
     }
 }

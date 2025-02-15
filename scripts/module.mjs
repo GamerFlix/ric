@@ -10,7 +10,7 @@
 import RicApp from "./modules/app.mjs";
 import { ButtonInjector } from "./modules/button_injector.mjs";
 import {Wrapper} from "./modules/wrapper.mjs"
-import { ApiFunctions } from "./modules/api";
+import { ApiFunctions } from "./modules/api.mjs";
 /**
  * Sub Apps
  */
@@ -38,12 +38,13 @@ export class MODULE {
 /*
   Initialize Module
 */
-MODULE.build();
+//MODULE.build();
 
 /*
   Initialize all Sub Modules
 */
 Hooks.once("init", () => {
+
   game.modules.get(MODULE.id).api = {};
   for (const SUB_MODULE of MODULE.SUB_MODULES) SUB_MODULE.register();
 

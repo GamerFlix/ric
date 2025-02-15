@@ -138,7 +138,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
     static async #manualFix(event, target) {
       const {collectionName, id} = target.closest(".error").dataset;
       const errorData = this.retrieveError(collectionName, id);
-      console.log(errorData.source)
+      //console.log(errorData.source)
       const paths=RicApp._retrieveInvalidValues(errorData.error.getFailure())
       if (Object.keys(paths).includes("type")){
         ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
@@ -158,7 +158,7 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
           callback: (event, button) => new FormDataExtended(button.form).object
         }
       });
-      console.log(data)
+      //console.log(data)
       await doc.update(data)
       ui.notifications.info(game.i18n.format("RIC.NOTIF.MANUALFIX"))
     }
@@ -176,10 +176,9 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
       }
       //This entire section is a mess and a hack but it works
       let paths={}
-      console.log(failure)
       const [level,obj,key,containsArray]=RicApp._traverseFailure(failure,paths)
-      console.log(paths)
       if (containsArray){
+        console.log(paths)
         ui.notifications.warn(game.i18n.format("RIC.NOTIF.ARRAY"))
         return
       }
@@ -207,7 +206,8 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
       if (currentValue===undefined){
         let fields=[]
         if (!!currentLevel.fields)fields=fields.concat(Object.entries(currentLevel.fields))
-        if (!!currentLevel.elements){
+        if (currentLevel.elements.length>0){
+          //console.log(currentLevel.elements)
           fields=fields.concat(Object.entries(currentLevel.elements))
           containsArray=true
         } 
