@@ -21,7 +21,7 @@
     "download": "",
 	"compatibility":{
 		"minimum": "12.331",
-        "verified": "12"
+        "verified": "13.336"
 	},
   "styles": [
     "styles/styles.css"
