@@ -107,12 +107,25 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
   static async #autoFix(event, target) {
     const {collectionName, id} = target.closest(".error").dataset;
     const errorData = this.retrieveError(collectionName, id);
+    let specialHandling=""
+
     let paths={}
     RicApp._traverseFailure(errorData.error.getFailure(),paths)
-    paths=foundry.utils.flattenObject(paths[""])//Can't use retrieveInvalidValues as it includes the irrelevant array check
-    if (Object.keys(paths).includes("type")){
-      ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
-      return
+    if (foundry.utils.isEmpty(paths)){
+      
+      if ((getDocumentClass("Macro")===errorData.collection.documentClass)&&errorData.source.type==="script"){
+        specialHandling="ScriptMacro";
+      }else{  
+        ui.notifications.warn(game.i18n.localize("RIC.NOTIF.UNSALVAGEABLE"))
+        return
+      }
+    }
+
+    if (!foundry.utils.isEmpty(paths)){
+      if (Object.keys(foundry.utils.flattenObject(paths[""])).includes("type")){
+        ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
+        return
+     }
     }
 
     const confirm= await foundry.applications.api.DialogV2.confirm({
@@ -122,7 +135,8 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
     });
     if (confirm){
       const doc=errorData.collection.getInvalid(errorData.source._id)
-      doc.update(doc.toObject(),{diff:false,recursive:false})
+      if (specialHandling==="") doc.update(doc.toObject(),{diff:false,recursive:false})
+      else if(specialHandling==="ScriptMacro") doc.update({type:"chat"},{diff:false,recursive:false})
       ui.notifications.info(game.i18n.localize("RIC.NOTIF.AUTOFIX"))
     }
 
@@ -138,7 +152,21 @@ export default class RicApp extends foundry.applications.api.HandlebarsApplicati
     static async #manualFix(event, target) {
       const {collectionName, id} = target.closest(".error").dataset;
       const errorData = this.retrieveError(collectionName, id);
-      //console.log(errorData.source)
+      const failure=errorData.error.getFailure()
+
+      //Code validation failed, manual fix method only works for world collection Macro though
+      if (foundry.utils.isEmpty(failure.fields) && foundry.utils.isEmpty(failure.elements)&&errorData.collection.documentClass===getDocumentClass("Macro")&&errorData.collection instanceof (foundry.documents.abstract?.WorldCollection ?? WorldCollection)){
+        const oldSource = errorData.source;
+        const macro = new Macro({...oldSource, command: ""}); // Make it but clean
+        // Set the dirty data in-memory, v13 sheet needs the source, v12 the doc, dunno why
+        if (game.release.generation >= 13) macro._source.command = oldSource.command;
+        else macro.command = oldSource.command;
+
+        macro.sheet.render(true); // Dirty data respected, auto-un-escapes
+        ui.notifications.info(game.i18n.format("RIC.NOTIF.USE_SHEET_AND_RELOAD"))
+        return
+      }
+
       const paths=RicApp._retrieveInvalidValues(errorData.error.getFailure())
       if (Object.keys(paths).includes("type")){
         ui.notifications.warn(game.i18n.format("RIC.NOTIF.CUSTOMTYPE"))
